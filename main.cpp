@@ -1,4 +1,5 @@
 #include "day1.hpp"
+#include "day2.hpp"
 #include <iostream>
 
 int main(int argc, char **argv) {
@@ -8,6 +9,9 @@ int main(int argc, char **argv) {
   switch (day) {
   case 1:
     day1().run_sim(half);
+    break;
+  case 2:
+    day2().run_sim(half);
     break;
   default:
     std::cout << "Day " << day << " not implemented yet!" << std::endl;
