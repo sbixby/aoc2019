@@ -4,7 +4,7 @@
 
 #include "day2.hpp"
 
-void writeVec(std::vector<int> v)
+void day2::writeVec(std::vector<int> v)
 {
     for (int i = 0; i < v.size() - 1; ++i)
     {
@@ -15,34 +15,53 @@ void writeVec(std::vector<int> v)
 
 void day2::run_sim(int half)
 {
-    std::vector<int> opCodes = {
-        1,  0,  0,  3,   1,  1,   2,  3,   1,  3,  4,   3,   1,  5,  0,   3,  2,  10, 1,  19, 2,  19, 6,  23, 2,
-        13, 23, 27, 1,   9,  27,  31, 2,   31, 9,  35,  1,   6,  35, 39,  2,  10, 39, 43, 1,  5,  43, 47, 1,  5,
-        47, 51, 2,  51,  6,  55,  2,  10,  55, 59, 1,   59,  9,  63, 2,   13, 63, 67, 1,  10, 67, 71, 1,  71, 5,
-        75, 1,  75, 6,   79, 1,   10, 79,  83, 1,  5,   83,  87, 1,  5,   87, 91, 2,  91, 6,  95, 2,  6,  95, 99,
-        2,  10, 99, 103, 1,  103, 5,  107, 1,  2,  107, 111, 1,  6,  111, 0,  99, 2,  14, 0,  0};
+    if (half == 1)
+    {
+        auto ans = runProgram(12, 2);
+        std::cout << "First half ans: " << ans << std::endl;
+    }
+
+    for (int noun = 0; noun < 100; ++noun)
+    {
+        for (int verb = 0; verb < 100; ++verb)
+        {
+            auto ans = runProgram(noun, verb);
+            if (ans == 19690720)
+            {
+                std::cout << "Second half ans: " << (100 * noun + verb) << std::endl;
+                std::cout << "noun:" << noun << std::endl;
+                std::cout << "verb:" << verb << std::endl;
+//                return;
+            }
+        }
+    }
+}
+
+int day2::runProgram(int noun, int verb)
+{
+    auto pg = opCodes;
+
+    pg[1] = noun;
+    pg[2] = verb;
 
     int sp = 0;
 
-    opCodes[1] = 12;
-    opCodes[2] = 2;
-
     while (true)
     {
-        if (opCodes[sp] == 1)
+        if (pg[sp] == 1)
         {
-            opCodes[opCodes[sp + 3]] = opCodes[opCodes[sp + 1]] + opCodes[opCodes[sp + 2]];
+            pg[pg[sp + 3]] = pg[pg[sp + 1]] + pg[pg[sp + 2]];
             sp += 4;
         }
-        else if (opCodes[sp] == 2)
+        else if (pg[sp] == 2)
         {
-            opCodes[opCodes[sp + 3]] = opCodes[opCodes[sp + 1]] * opCodes[opCodes[sp + 2]];
+            pg[pg[sp + 3]] = pg[pg[sp + 1]] * pg[pg[sp + 2]];
             sp += 4;
         }
-        else if (opCodes[sp] == 99)
+        else if (pg[sp] == 99)
         {
             break;
         }
-        writeVec(opCodes);
     }
+    return pg[0];
 }
