@@ -1,28 +1,16 @@
 //
-// Created by sbixby on 12/13/19.
+// Created by sbixby on 12/14/19.
 //
 
 #include "day3.hpp"
 #include <boost/tokenizer.hpp>
 #include <array>
 
-struct dir_len
-{
-    char dir;
-    int  dist;
-};
-
-struct xy
-{
-    int x;
-    int y;
-};
-
-std::vector<dir_len> ParseLine(std::string line)
+std::vector<dir_len> day3::ParseLine(const std::string& line)
 {
     std::vector<dir_len> rv;
     auto                 tok = boost::tokenizer<>(line);
-    for (auto &itr : tok)
+    for (auto& itr : tok)
     {
         auto dir = itr[0];
         auto len = std::stoi(itr.substr(1));
@@ -31,167 +19,86 @@ std::vector<dir_len> ParseLine(std::string line)
     return rv;
 }
 
-void print_path(std::vector<dir_len> path)
+std::vector<ln> day3::MakeLines(std::vector<dir_len> path)
 {
-    std::cout << "Path:" << std::endl;
-    for (auto &dl : path)
-    {
-        std::cout << "    " << dl.dir << " " << dl.dist << std::endl;
-    }
-}
-
-std::vector<xy> GetCoordsHit(std::vector<dir_len> path)
-{
-    std::vector<xy> coords;
+    std::vector<ln> lines;
     int             cx = 0, cy = 0;
-    int             dx = 0, dy = 0;
-    for (dir_len &dl : path)
+    for (dir_len& dl : path)
     {
-        for (int i = 0; i < dl.dist; ++i)
+        switch (dl.dir)
         {
-            switch (dl.dir)
-            {
-                case 'R':
-                    dx = 1;
-                    dy = 0;
-                    break;
-                case 'L':
-                    dx = -1;
-                    dy = 0;
-                    break;
-                case 'U':
-                    dx = 0;
-                    dy = 1;
-                    break;
-                case 'D':
-                    dx = 0;
-                    dy = -1;
-                    break;
-            }
-            cx += dx;
-            cy += dy;
-            coords.push_back(xy{cx, cy});
+            case 'R':
+                lines.emplace_back(cx + 1, cx + dl.dist, cy, cy);
+                cx += dl.dist;
+                break;
+            case 'L':
+                lines.emplace_back(cx - dl.dist, cx - 1, cy, cy);
+                cx -= dl.dist;
+                break;
+            case 'U':
+                lines.emplace_back(cx, cx, cy + 1, cy + dl.dist);
+                cy += dl.dist;
+                break;
+            case 'D':
+                lines.emplace_back(cx, cx, cy - dl.dist, cy - 1);
+                cy -= dl.dist;
+                break;
         }
     }
-    return coords;
-}
 
-std::vector<xy> FindCommon(std::vector<xy> p1, std::vector<xy> p2)
-{
-    std::vector<xy> ccs;
-    for (auto &i1 : p1)
-    {
-        for (auto &i2 : p2)
-        {
-            if (i1.x == i2.x && i1.y == i2.y)
-            {
-                ccs.push_back(i2);
-            }
-        }
-    }
-    return ccs;
-}
-
-void FindExtents(std::vector<xy> p, int &minx, int &miny, int &maxx, int &maxy)
-{
-    for (auto &c : p)
-    {
-        if (c.x < minx)
-            minx = c.x;
-        if (c.x > maxx)
-            maxx = c.x;
-        if (c.y < miny)
-            miny = c.y;
-        if (c.y > maxy)
-            maxy = c.y;
-    }
-}
-
-void DumpFilledGrids(std::vector<xy> p1, std::vector<xy> p2)
-{
-    int minx = 999999, miny = 999999, maxx = -999999, maxy = -999999;
-    FindExtents(p1, minx, miny, maxx, maxy);
-    FindExtents(p2, minx, miny, maxx, maxy);
-    std::cout << "minx:" << minx << std::endl;
-    std::cout << "miny:" << miny << std::endl;
-    std::cout << "maxx:" << maxx << std::endl;
-    std::cout << "maxy:" << maxy << std::endl;
-
-    std::size_t sizex = maxx - minx + 1;
-    std::size_t sizey = maxy - miny + 1;
-    int         offsx = -minx;
-    int         offsy = -miny;
-
-    std::vector<std::vector<char>> grid;
-    grid.reserve(sizey);
-    for (int iy = 0; iy < sizey; ++iy)
-    {
-        grid.emplace_back(sizex, '.');
-    }
-
-    grid[offsy][offsx] = 'O';
-
-    for (auto &c : p1)
-    {
-        grid[c.y + offsy][c.x + offsx] = 'X';
-    }
-    for (auto &c : p2)
-    {
-        char cell = grid[c.y + offsy][c.x + offsx] == 'X' ? '*' : 'Y';
-
-        grid[c.y + offsy][c.x + offsx] = cell;
-    }
-
-    std::reverse(grid.begin(), grid.end());
-    for (auto &rw : grid)
-    {
-        for (auto &col : rw)
-        {
-            std::cout << col;
-        }
-        std::cout << std::endl;
-    }
-}
-
-void print_coords(std::vector<xy> coords)
-{
-    std::cout << "Coords:" << std::endl;
-    for (auto &c : coords)
-    {
-        std::cout << "  (" << c.x << "," << c.y << ")" << std::endl;
-    }
+    return lines;
 }
 
 void day3::run_sim(int half)
 {
-    auto lines = load_data("../data/day3.txt");
+    auto lines  = load_data("../data/day3.txt");
+    auto path1  = ParseLine(lines[0]);
+    auto path2  = ParseLine(lines[1]);
+    auto lines1 = MakeLines(path1);
+    auto lines2 = MakeLines(path2);
 
-    auto path1 = ParseLine(lines[0]);
-    std::cout << "path1size()s:" << path1.size() << std::endl;
-//    print_path(path1);
-    auto ca = GetCoordsHit(path1);
-    std::cout << "ca.size():" << ca.size() << std::endl;
-    //    print_coords(ca);
-    auto path2 = ParseLine(lines[1]);
-    std::cout << "path2.size():" << path2.size() << std::endl;
-//    print_path(path2);
-    auto cb = GetCoordsHit(path2);
-    std::cout << "cb.size():" << cb.size() << std::endl;
-    //    print_coords(cb);
+//    std::cout << "lines 1" << std::endl;
+//    for (auto& l : lines1)
+//    {
+//        std::cout << "Line from: " << l.x1 << "," << l.y1 << " to: " << l.x2 << "," << l.y2 << ",  x?:" << l.xline << std::endl;
+//    }
+//
+//    std::cout << "lines 2" << std::endl;
+//    for (auto& l : lines2)
+//    {
+//        std::cout << "Line from: " << l.x1 << "," << l.y1 << " to: " << l.x2 << "," << l.y2 << ",  x?:" << l.xline << std::endl;
+//    }
+//
+    std::vector<xy> crossings;
+    for (auto& l1 : lines1)
+    {
+        for (auto& l2 : lines2)
+        {
+            if (l1.xline && !l2.xline)
+            {
+                if (l1.x1 <= l2.x1 && l1.x2 >= l2.x1 && l2.y1 <= l1.y1 && l2.y2 >= l1.y1) {
+                    crossings.push_back( xy { l2.x1, l1.y1});
+                }
+            }
+            if (l2.xline && !l1.xline)
+            {
+                if (l2.x1 <= l1.x1 && l2.x2 >= l1.x1 && l1.y1 <= l2.y1 && l1.y2 >= l2.y1) {
+                    crossings.push_back( xy { l1.x1, l2.y1});
+                }
 
-    //    DumpFilledGrids(ca, cb);
-
-    auto cc = FindCommon(ca, cb);
-//    std::cout << "Common coords:" << std::endl;
-//    print_coords(cc);
+            }
+        }
+    }
 
     int smallest{99999999};
-    for (auto &c : cc)
+    for (auto &c : crossings)
     {
+//        std::cout << c.x << ", " << c.y << std::endl;
         int dist = abs(c.x) + abs(c.y);
         if (dist < smallest)
             smallest = dist;
     }
 
-    std::cout << "Shortest dist: " <<smallest << std::endl;
+    std::cout << "smallest:" << smallest << std::endl;
+
 }
