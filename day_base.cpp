@@ -24,3 +24,4 @@ std::vector<std::string> day_base::load_data(std::string fileName) {
     exit(2);
   }
 }
+

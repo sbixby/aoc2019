@@ -6,7 +6,7 @@
 
 void day1::run_sim(int half)
 {
-    auto             lines = load_data("../data/day_1_1.txt");
+    auto             lines = load_data("../data/day1_1.txt");
     std::vector<int> masses;
     for (auto &s : lines)
         masses.push_back(std::stoi(s));
