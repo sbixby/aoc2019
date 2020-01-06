@@ -50,9 +50,9 @@ std::vector<ln> day3::MakeLines(std::vector<dir_len> path)
     return lines;
 }
 
-std::vector<xy> day3::GetCoordsHit(std::vector<dir_len> path)
+std::vector<xy2> day3::GetCoordsHit(std::vector<dir_len> path)
 {
-    std::vector<xy> coords;
+    std::vector<xy2> coords;
     int             cx = 0, cy = 0;
     int             dx = 0, dy = 0;
     for (dir_len& dl : path)
@@ -80,13 +80,13 @@ std::vector<xy> day3::GetCoordsHit(std::vector<dir_len> path)
             }
             cx += dx;
             cy += dy;
-            coords.push_back(xy{cx, cy});
+            coords.push_back(xy2{cx, cy});
         }
     }
     return coords;
 }
 
-void day3::FindDupes(const std::vector<xy>& ch) const
+void day3::FindDupes(const std::vector<xy2>& ch) const
 {
     for (int i = 0; i < ch.size(); ++i)
     {
@@ -100,7 +100,7 @@ void day3::FindDupes(const std::vector<xy>& ch) const
     }
 }
 
-void day3::FindShortestDist(std::vector<xy>& ch, xy& c, int& idx, int& dist)
+void day3::FindShortestDist(std::vector<xy2>& ch, xy2& c, int& idx, int& dist)
 {
     idx = std::distance(ch.begin(), std::find(ch.begin(), ch.end(), c));
     int  fwd, rev, iter;
@@ -142,9 +142,9 @@ void day3::FindShortestDist(std::vector<xy>& ch, xy& c, int& idx, int& dist)
     dist = minDist;
 }
 
-std::vector<xy> day3::FindCrossings(std::vector<ln>& lines)
+std::vector<xy2> day3::FindCrossings(std::vector<ln>& lines)
 {
-    std::vector<xy> crossings;
+    std::vector<xy2> crossings;
     for (int i1 = 0; i1 < lines.size() - 1; ++i1)
     {
         for (int i2 = i1 + 1; i2 < lines.size(); ++i2)
@@ -170,9 +170,9 @@ std::vector<xy> day3::FindCrossings(std::vector<ln>& lines)
     return crossings;
 }
 
-std::vector<xy> day3::FindCrossings(std::vector<ln>& lines1, std::vector<ln>& lines2)
+std::vector<xy2> day3::FindCrossings(std::vector<ln>& lines1, std::vector<ln>& lines2)
 {
-    std::vector<xy> crossings;
+    std::vector<xy2> crossings;
     for (auto& l1 : lines1)
     {
         for (auto& l2 : lines2)
@@ -227,9 +227,9 @@ void day3::run_sim(int half)
     }
     else
     {
-        std::vector<xy> ch1 = GetCoordsHit(path1);
+        std::vector<xy2> ch1 = GetCoordsHit(path1);
         std::cout << "ch1.size():" << ch1.size() << std::endl;
-        std::vector<xy> ch2 = GetCoordsHit(path2);
+        std::vector<xy2> ch2 = GetCoordsHit(path2);
         std::cout << "ch2.size():" << ch2.size() << std::endl;
         std::sort(crossings.begin(), crossings.end());
 
@@ -262,8 +262,8 @@ void day3::run_sim(int half)
     }
 }
 
-void day3::dump_map(std::vector<xy> ch1, std::vector<xy> cross1, std::vector<xy> ch2, std::vector<xy> cross2,
-                    std::vector<xy> crossings)
+void day3::dump_map(std::vector<xy2> ch1, std::vector<xy2> cross1, std::vector<xy2> ch2, std::vector<xy2> cross2,
+                    std::vector<xy2> crossings)
 {
     int minx = 999999, miny = 999999, maxx = -999999, maxy = -999999;
     for (auto& c : ch1)
@@ -335,7 +335,7 @@ void day3::dump_map(std::vector<xy> ch1, std::vector<xy> cross1, std::vector<xy>
     os.close();
 }
 
-int day3::FindSteps(std::vector<xy> coords, std::vector<xy> selfCrosses, xy& commonCross)
+int day3::FindSteps(std::vector<xy2> coords, std::vector<xy2> selfCrosses, xy2& commonCross)
 {
     int  ccIdx    = std::distance(coords.begin(), std::find(coords.begin(), coords.end(), commonCross));
     auto itr1     = coords.begin();

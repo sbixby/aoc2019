@@ -26,31 +26,60 @@ struct xy
 {
     int x;
     int y;
-    int md;
-    int c1Idx;
-    int c2Idx;
-    int c1Dist;
-    int c2Dist;
-    std::vector<int> crosses;
-
+    xy()
+        : x{-1}
+        , y{-1}
+    {
+    }
     xy(int x, int y)
         : x{x}
         , y{y}
+    {
+    }
+    bool operator==(const xy& other)
+    {
+        return x == other.x && y == other.y;
+    }
+    friend std::ostream& operator<<(std::ostream& os, const xy& o);
+};
+
+std::ostream& operator<<(std::ostream& os, const xy& o);
+
+struct xy2 : xy
+{
+    int              md;
+    int              c1Idx;
+    int              c2Idx;
+    int              c1Dist;
+    int              c2Dist;
+    std::vector<int> crosses;
+
+    xy2(int x, int y)
+        : xy{x, y}
         , c1Idx{-1}
         , c2Idx{-1}
         , c1Dist{-1}
-        , c2Dist{-1} {
+        , c2Dist{-1}
+    {
         md = abs(x) + abs(y);
     };
 
-    bool operator<(const xy &other)
+    bool operator<(const xy2& other)
     {
         return md < other.md;
     }
+};
 
-    bool operator==(const xy &other)
+struct xyang : xy
+{
+    double angle;
+    xyang()
+        : xy{-1, -1}
+        , angle{99999999.0} {};
+    xyang(int x, int y)
+        : xy{x, y}
+        , angle{999999999.0}
     {
-        return x == other.x && y == other.y;
     }
 };
 
