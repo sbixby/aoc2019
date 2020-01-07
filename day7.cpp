@@ -6,19 +6,7 @@
 #include <sstream>
 #include <boost/tokenizer.hpp>
 
-std::vector<int> day7::ParseLine(std::string line)
-{
-    std::vector<int> opCodes;
-    auto             sep = boost::char_separator<char>(",");
-    auto             tok = boost::tokenizer<boost::char_separator<char>>(line, sep);
-    for (auto& itr : tok)
-    {
-        opCodes.push_back(std::stoi(itr));
-    }
-    return opCodes;
-}
-
-bool day7::runProgram(std::vector<int>& pg, int phase, int inputValue, int& output, bool returnOnOutput, int& sp)
+bool day7::runProgram(std::vector<long>& pg, int phase, int inputValue, int& output, bool returnOnOutput, int& sp)
 {
     int input;
     if (sp > 0)
@@ -56,7 +44,7 @@ bool day7::runProgram(std::vector<int>& pg, int phase, int inputValue, int& outp
                 pg[sp + 1] = input;
             }
             // If it was phase, now it's inputValue.
-            input = inputValue;
+            input = input;
             sp += 2;
         }
         else if (opCode == 4)
@@ -244,7 +232,7 @@ void day7::run_sim(int half)
                   [](const std::vector<int>& a, const std::vector<int>& b) { return vtoi(a) < vtoi(b); });
 
         int              largest = 0;
-        std::vector<int> pga = opCodes, pgb = opCodes, pgc = opCodes, pgd = opCodes, pge = opCodes;
+        std::vector<long> pga = opCodes, pgb = opCodes, pgc = opCodes, pgd = opCodes, pge = opCodes;
 
         for (auto& inputSet : inputSets)
         {

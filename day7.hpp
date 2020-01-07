@@ -12,8 +12,7 @@ class day7 : day_base
     void run_sim(int half) override;
 
    private:
-    bool runProgram(std::vector<int> &pg, int phase, int input, int& output, bool returnOnOutput, int& sp);
-    std::vector<int> ParseLine(std::string line);
+    bool runProgram(std::vector<long> &pg, int phase, int input, int& output, bool returnOnOutput, int& sp);
     void MakePermutations(std::vector<int> v, std::vector<std::vector<int>> &perms);
 };
 

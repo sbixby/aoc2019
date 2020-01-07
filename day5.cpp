@@ -5,19 +5,7 @@
 #include "day5.hpp"
 #include <boost/tokenizer.hpp>
 
-std::vector<int> day5::ParseLine(std::string line)
-{
-    std::vector<int> opCodes;
-    auto             sep = boost::char_separator<char>(",");
-    auto             tok = boost::tokenizer<boost::char_separator<char>>(line, sep);
-    for (auto& itr : tok)
-    {
-        opCodes.push_back(std::stoi(itr));
-    }
-    return opCodes;
-}
-
-void day5::runProgram(std::vector<int> pg, int input, int& output)
+void day5::runProgram(std::vector<long> pg, int input, int& output)
 {
     int sp = 0;
     while (true)

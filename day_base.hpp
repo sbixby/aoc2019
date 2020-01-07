@@ -9,11 +9,15 @@
 #include <iostream>
 #include <string>
 #include <vector>
+
 class day_base
 {
    public:
     virtual std::vector<std::string> load_data(std::string fileName);
     virtual void                     run_sim(int half) = 0;
+    static std::vector<long>         ParseLine(const std::string& line, long reserve = -1);
+    static long                      getIntCodeVal(std::vector<long>& pg, long sp, long pm, long relBase);
+    static void setIntCodeVal(std::vector<long>& pg, long sp, long pm, long relBase, long newValue);
 };
 
 struct dir_len
@@ -70,17 +74,40 @@ struct xy2 : xy
     }
 };
 
-struct xyang : xy
+struct xyadr : xy
 {
     double angle;
-    xyang()
+    double dist;
+    int    ring;
+    xyadr()
         : xy{-1, -1}
-        , angle{99999999.0} {};
-    xyang(int x, int y)
+        , angle{99999999.0}
+        , dist{0.0}
+        , ring{0} {};
+    xyadr(int x, int y)
         : xy{x, y}
+        , dist{0.0}
+        , ring{0}
         , angle{999999999.0}
     {
     }
+    friend std::ostream& operator<<(std::ostream& os, const xyadr& o);
+};
+
+struct xyclr : xy
+{
+    int color; // 0=black, 1=white
+    xyclr(int x, int y)
+        : xy(x, y)
+        , color('B')
+    {
+    }
+    xyclr(int x, int y, int clr)
+        : xy(x, y)
+        , color(clr)
+    {
+    }
+    friend std::ostream& operator<<(std::ostream& os, const xyclr& o);
 };
 
 struct ln

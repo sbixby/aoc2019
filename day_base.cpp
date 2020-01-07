@@ -1,3 +1,8 @@
+#include <math.h>
+#include "day9.hpp"
+#include "day11.hpp"
+#include <boost/tokenizer.hpp>
+#include <boost/token_functions.hpp>
 #include "day_base.hpp"
 #include <string>
 #include <vector>
@@ -37,4 +42,80 @@ std::ostream& operator<<(std::ostream& os, const xy& o)
 {
     os << "(" << o.x << "," << o.y << ")";
     return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const xyadr& o)
+{
+    os << "(" << o.x << "," << o.y << ") - a:" << o.angle << " r:" << o.dist << " ring:" << o.ring;
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const xyclr& o)
+{
+    os << "(" << o.x << "," << o.y << ") - color:" << o.color;
+    return os;
+}
+
+std::vector<long> day_base::ParseLine(const std::string& line, long reserve)
+{
+    std::vector<long> opCodes;
+    if (reserve >= 0)
+        opCodes.reserve(reserve);
+    auto sep = boost::char_separator<char>(",");
+    auto tok = boost::tokenizer<boost::char_separator<char>>(line, sep);
+    int  idx = 0;
+    for (auto& itr : tok)
+    {
+        long oc = std::stol(itr);
+        if (reserve >= 0)
+        {
+            opCodes[idx++] = oc;
+        }
+        else
+            opCodes.push_back(oc);
+    }
+    return opCodes;
+}
+
+long day_base::getIntCodeVal(std::vector<long>& pg, long sp, long pm, long relBase)
+{
+    int fct = 10;
+    for (int i = 0; i < pm; ++i)
+    {
+        fct *= 10;
+    }
+    long mode = pg[sp] / fct % 10;
+    if (mode == 0)
+    {
+        return pg[pg[sp + pm]];
+    }
+    else if (mode == 1)
+    {
+        return pg[sp + pm];
+    }
+    else
+    {
+        return pg[pg[sp + pm] + relBase];
+    }
+}
+void day_base::setIntCodeVal(std::vector<long>& pg, long sp, long pm, long relBase, long newValue)
+{
+    int fct = 10;
+    for (int i = 0; i < pm; ++i)
+    {
+        fct *= 10;
+    }
+    long mode = pg[sp] / fct % 10;
+    if (mode == 0)
+    {
+        pg[pg[sp + pm]] = newValue;
+    }
+    else if (mode == 1)
+    {
+        pg[sp + pm] = newValue;
+    }
+    else
+    {
+        pg[pg[sp + pm] + relBase] = newValue;
+    }
 }
