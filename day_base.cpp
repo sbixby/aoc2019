@@ -1,4 +1,4 @@
-#include <math.h>
+#include <cmath>
 #include "day9.hpp"
 #include "day11.hpp"
 #include <boost/tokenizer.hpp>
@@ -6,6 +6,8 @@
 #include "day_base.hpp"
 #include <string>
 #include <vector>
+#include <iostream>
+#include <iomanip>
 
 std::vector<std::string> day_base::load_data(std::string fileName)
 {
@@ -56,9 +58,15 @@ std::ostream& operator<<(std::ostream& os, const xyclr& o)
     return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const xyz& o)
+std::ostream& operator<<(std::ostream& os, const xyzvel& o)
 {
-    os << "(" << o.x << "," << o.y << "," << o.z << ")";
+    os << "pos=<x=" << std::setfill(' ') << std::setw(6)  << o.x;
+    os << ", y=" << std::setfill(' ') << std::setw(6)   << o.y;
+    os << ", z=" << std::setfill(' ') << std::setw(6)   << o.z;
+    os << ">, vel=<x=" << std::setfill(' ') << std::setw(6)   << o.vx;
+    os << ", y=" << std::setfill(' ') << std::setw(6)   << o.vy;
+    os << ", z=" << std::setfill(' ') << std::setw(6)   << o.vz;
+    os << ">";
     return os;
 }
 

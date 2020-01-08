@@ -96,7 +96,7 @@ struct xyadr : xy
 
 struct xyclr : xy
 {
-    int color; // 0=black, 1=white
+    int color;    // 0=black, 1=white
     xyclr(int x, int y)
         : xy(x, y)
         , color(0)
@@ -125,12 +125,36 @@ struct ln
     }
 };
 
-struct xyz {
+struct xyzvel
+{
     int x;
     int y;
     int z;
-    xyz(int x,int y, int z) : x{x},y{y},z{z} {}
-    friend std::ostream& operator<<(std::ostream& os, const xyz& o);
+    int vx, vy, vz;
+    xyzvel(int x, int y, int z)
+        : x{x}
+        , y{y}
+        , z{z}
+        , vx{0}
+        , vy{0}
+        , vz{0}
+    {
+    }
+    xyzvel()
+        : x{INT32_MAX}
+        , y{INT32_MAX}
+        , z{INT32_MAX}
+        , vx{INT32_MAX}
+        , vy{INT32_MAX}
+        , vz{INT32_MAX}
+    {
+    }
+    friend std::ostream& operator<<(std::ostream& os, const xyzvel& o);
+
+    int nrg()
+    {
+        return (abs(x) + abs(y) + abs(z)) * (abs(vx) + abs(vy) + abs(vz));
+    }
 };
 
 #endif    // AOC2019_DAY_BASE_HPP
