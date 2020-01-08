@@ -85,19 +85,23 @@ long day_base::getIntCodeVal(std::vector<long>& pg, long sp, long pm, long relBa
         fct *= 10;
     }
     long mode = pg[sp] / fct % 10;
+    long loc;
     if (mode == 0)
     {
-        return pg[pg[sp + pm]];
+        loc = pg[sp + pm];
     }
     else if (mode == 1)
     {
-        return pg[sp + pm];
+        loc = sp + pm;
     }
     else
     {
-        return pg[pg[sp + pm] + relBase];
+        loc = pg[sp + pm] + relBase;
     }
+    std::cout << "Reading from loc:" << loc << " value:" << pg[loc] << std::endl;
+    return pg[loc];
 }
+
 void day_base::setIntCodeVal(std::vector<long>& pg, long sp, long pm, long relBase, long newValue)
 {
     int fct = 10;
@@ -106,16 +110,22 @@ void day_base::setIntCodeVal(std::vector<long>& pg, long sp, long pm, long relBa
         fct *= 10;
     }
     long mode = pg[sp] / fct % 10;
+    long dest;
     if (mode == 0)
     {
-        pg[pg[sp + pm]] = newValue;
+        dest = pg[sp + pm];
     }
     else if (mode == 1)
     {
-        pg[sp + pm] = newValue;
+        dest = sp + pm;
     }
     else
     {
-        pg[pg[sp + pm] + relBase] = newValue;
+        dest = pg[sp + pm] + relBase;
     }
+    std::cout << "Writing "<< newValue << " to loc " << pg[sp + pm] << " from sp:" << sp << std::endl;
+    if (dest > pg.size()) {
+        exit(-1);
+    }
+    pg[dest] = newValue;
 }

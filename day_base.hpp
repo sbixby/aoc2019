@@ -99,7 +99,7 @@ struct xyclr : xy
     int color; // 0=black, 1=white
     xyclr(int x, int y)
         : xy(x, y)
-        , color('B')
+        , color(0)
     {
     }
     xyclr(int x, int y, int clr)
