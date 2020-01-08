@@ -56,6 +56,12 @@ std::ostream& operator<<(std::ostream& os, const xyclr& o)
     return os;
 }
 
+std::ostream& operator<<(std::ostream& os, const xyz& o)
+{
+    os << "(" << o.x << "," << o.y << "," << o.z << ")";
+    return os;
+}
+
 std::vector<long> day_base::ParseLine(const std::string& line, long reserve)
 {
     std::vector<long> opCodes;
@@ -98,7 +104,6 @@ long day_base::getIntCodeVal(std::vector<long>& pg, long sp, long pm, long relBa
     {
         loc = pg[sp + pm] + relBase;
     }
-    std::cout << "Reading from loc:" << loc << " value:" << pg[loc] << std::endl;
     return pg[loc];
 }
 
@@ -122,10 +127,6 @@ void day_base::setIntCodeVal(std::vector<long>& pg, long sp, long pm, long relBa
     else
     {
         dest = pg[sp + pm] + relBase;
-    }
-    std::cout << "Writing "<< newValue << " to loc " << pg[sp + pm] << " from sp:" << sp << std::endl;
-    if (dest > pg.size()) {
-        exit(-1);
     }
     pg[dest] = newValue;
 }

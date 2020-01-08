@@ -9,6 +9,7 @@
 #include "day9.hpp"
 #include "day10.hpp"
 #include "day11.hpp"
+#include "day12.hpp"
 #include <iostream>
 
 int main(int argc, char **argv)
@@ -50,6 +51,9 @@ int main(int argc, char **argv)
             break;
         case 11:
             day11().run_sim(half);
+            break;
+        case 12:
+            day12().run_sim(half);
             break;
         default:
             std::cout << "Day " << day << " not implemented yet!" << std::endl;

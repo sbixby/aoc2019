@@ -11,7 +11,7 @@ class day11:day_base
    public:
     void run_sim(int half) override;
     bool runProgram(std::vector<long>& pg, std::vector<long>& inputs, std::vector<long>& outputs, int expOutputCount,
-                    long& sp);
+                    long& sp, long &relBase);
 };
 
 #endif    // AOC2019_DAY11_HPP

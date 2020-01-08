@@ -125,4 +125,12 @@ struct ln
     }
 };
 
+struct xyz {
+    int x;
+    int y;
+    int z;
+    xyz(int x,int y, int z) : x{x},y{y},z{z} {}
+    friend std::ostream& operator<<(std::ostream& os, const xyz& o);
+};
+
 #endif    // AOC2019_DAY_BASE_HPP

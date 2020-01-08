@@ -10,15 +10,13 @@
 #include "day_base.hpp"
 
 bool day11::runProgram(std::vector<long> &pg, std::vector<long> &inputs, std::vector<long> &outputs, int expOutputCount,
-                       long &sp)
+                       long &sp, long &relBase)
 {
-    long relBase = 0;
-    auto inpIt   = inputs.begin();
+    auto inpIt = inputs.begin();
     while (true)
     {
         long opCode = pg[sp] % 100;
 
-        std::cout << "OpCode " << opCode << "  (pg[sp]: " << pg[sp] << ")" << std::endl;
         if (opCode == 1)
         {
             long val1 = getIntCodeVal(pg, sp, 1, relBase);
@@ -112,12 +110,13 @@ void day11::run_sim(int half)
     std::map<char, std::tuple<char, char>> directions{
         {'N', {'W', 'E'}}, {'E', {'N', 'S'}}, {'S', {'E', 'W'}}, {'W', {'S', 'N'}}};
 
-    auto opCodes = ParseLine(load_data("../data/day11.txt")[0]);
+    auto opCodes = ParseLine(load_data("../data/day11.txt")[0], 5000);
 
     std::vector<xyclr> painted;
     int                currx = 0, curry = 0;
     char               currDir = 'N';
     long               sp      = 0;
+    long               relBase = 0;
 
     bool firstWhite = half == 2;
 
@@ -138,7 +137,6 @@ void day11::run_sim(int half)
             {
                 currColor  = 1;
                 firstWhite = false;
-                std::cout << "First color is white" << std::endl;
             }
             else
             {
@@ -148,7 +146,7 @@ void day11::run_sim(int half)
 
         std::vector<long> inputs{currColor};
 
-        bool fini = runProgram(opCodes, inputs, outputs, 2, sp);
+        bool fini = runProgram(opCodes, inputs, outputs, 2, sp, relBase);
 
         if (outputs.size() == 2)
         {
@@ -196,5 +194,42 @@ void day11::run_sim(int half)
     }
     else
     {
+        int minX = INT32_MAX, minY = INT32_MAX;
+        int maxX = INT32_MIN, maxY = INT32_MIN;
+        for (auto &p : painted)
+        {
+            if (p.x < minX)
+                minX = p.x;
+            if (p.y < minY)
+                minY = p.y;
+            if (p.x > maxX)
+                maxX = p.x;
+            if (p.y > maxY)
+                maxY = p.y;
+        }
+
+        int sizex = maxX - minX + 1;
+        int sizey = maxY - minY + 1;
+
+        std::vector<std::vector<char>> grid;
+        grid.reserve(sizey);
+        for (int i = 0; i < sizey; ++i)
+            grid.emplace_back(sizex, ' ');
+
+        for (auto &p : painted)
+        {
+            int offY = p.y - minY;
+            int offX = p.x - minX;
+            grid[offY][offX] = p.color == 1 ? '#' : ' ';
+        }
+
+        for(auto yg = grid.rbegin(); yg!=grid.rend();yg++)
+        {
+            for (auto &xg : *yg)
+            {
+                std::cout << xg;
+            }
+            std::cout << std::endl;
+        }
     }
 }
