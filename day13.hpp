@@ -12,6 +12,7 @@ class day13 : day_base
     void run_sim(int half) override;
     bool runProgram(std::vector<long>& pg, std::vector<long>& inputs, std::vector<long>& outputs, int expOutputCount,
                     long& sp, long& relBase);
+    void PrintScreen(std::vector<std::vector<char>> &scrn, std::vector<long> &outputs, bool first);
 };
 
 #endif    // AOC2019_DAY13_HPP
