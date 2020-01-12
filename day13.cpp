@@ -3,7 +3,6 @@
 //
 
 #include <iomanip>
-#include <chrono>
 #include <thread>
 #include "day13.hpp"
 
@@ -31,8 +30,6 @@ bool day13::runProgram(std::vector<long> &pg, std::vector<long> &inputs, std::ve
         }
         else if (opCode == 3)
         {
-            // std::cout << "Asking for input." << std::endl;
-            //            std::cout << "set input:" << *inpIt << std::endl;
             if (inpIt == inputs.end())
             {
                 std::cout << "Ran out of inputs!" << std::endl;
@@ -45,7 +42,6 @@ bool day13::runProgram(std::vector<long> &pg, std::vector<long> &inputs, std::ve
         else if (opCode == 4)
         {
             long output = getIntCodeVal(pg, sp, 1, relBase);
-            //            std::cout << "output:" << output << std::endl;
             outputs.push_back(output);
             sp += 2;
             if (outputs.size() >= expOutputCount)
@@ -155,8 +151,6 @@ void day13::run_sim(int half)
 {
     auto opCodes = ParseLine(load_data("../data/day13.txt")[0]);
 
-    std::cout << "opCodes.size():" << opCodes.size() << std::endl;
-
     std::vector<long>              inputs;
     std::vector<long>              outputs;
     long                           sp = 0, relBase = 0;
@@ -165,32 +159,16 @@ void day13::run_sim(int half)
     if (half == 1)
     {
         runProgram(opCodes, inputs, outputs, 99999999, sp, relBase);
-
-        int blockTiles = 0;
-        for (auto it = outputs.begin(); it != outputs.end(); it += 3)
-        {
-            if (*(it + 2) == 2)
-                blockTiles++;
-        }
-        PrintScreen(scrn, outputs, true);
-        std::cout << "blockTiles:" << blockTiles << std::endl;
-        std::ofstream f{"out1.txt"};
-        for (auto it = outputs.begin(); it != outputs.end(); it += 3)
-        {
-            f << std::setfill(' ') << std::setw(8) << *(it);
-            f << std::setfill(' ') << std::setw(8) << *(it + 1);
-            f << std::setfill(' ') << std::setw(8) << *(it + 2) << std::endl;
-        }
-        f.close();
     }
 
     if (half == 2)
     {
         opCodes[0] = 2;
         inputs.push_back(0);
-        int score;
+        double score;
+        long   paddleX = -1;
 
-        // Run until board is created.
+        // Run until board is created; first score code will jump out.
         while (true)
         {
             std::vector<long> subOuts;
@@ -200,26 +178,22 @@ void day13::run_sim(int half)
                 score = subOuts[2];
                 break;
             }
+            if (subOuts[2] == 3)
+            {
+                paddleX = subOuts[0];
+            }
             outputs.insert(outputs.end(), subOuts.begin(), subOuts.end());
         }
 
-        //        std::cout << "outputs.size():" << outputs.size() << std::endl;
-        //        std::ofstream f{"out2.txt"};
-        //        for (auto it = outputs.begin(); it != outputs.end(); it += 3) {
-        //            f << std::setfill(' ') << std::setw(8) << *(it);
-        //            f << std::setfill(' ') << std::setw(8) << *(it + 1);
-        //            f << std::setfill(' ') << std::setw(8) << *(it + 2) << std::endl;
-        //        }
-        //        f.close();
         // Run for turns
-        PrintScreen(scrn, outputs, true);
+        long ballMoves = 0;
         while (true)
         {
-            std::this_thread::sleep_for(std::chrono::milliseconds(250));
+            long              dx;
             std::vector<long> subOuts;
             if (runProgram(opCodes, inputs, subOuts, 3, sp, relBase))
             {
-                std::cout << "Game over." << std::endl;
+                std::cout << "Game over, score: " << score <<  "  ball moves: " << ballMoves << std::endl;
                 break;
             }
             if (subOuts[0] == -1)
@@ -228,9 +202,16 @@ void day13::run_sim(int half)
             }
             else
             {
-                std::cout << "\033[2J";
-                std::cout << "score:" << score << std::endl;
-                PrintScreen(scrn, subOuts, false);
+                if (subOuts[2] == 3)
+                {
+                    paddleX = subOuts[0];
+                }
+                if (subOuts[2] == 4)
+                {
+                    ballMoves++;
+                    dx        = paddleX - subOuts[0];
+                    inputs[0] = dx > 0 ? -1 : dx < 0 ? 1 : 0;
+                }
             }
         }
     }
