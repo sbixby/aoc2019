@@ -30,7 +30,7 @@ class day14 : day_base
    public:
     void run_sim(int half) override;
     static std::vector<d14::reaction> GetReactions(const std::vector<std::string>& lines);
-    static d14::reaction&             findReactionByOutput(std::vector<d14::reaction> reactions, std::string outName);
+    static d14::reaction              findReactionByOutput(std::vector<d14::reaction> reactions, std::string outName);
 };
 
 #endif    // AOC2019_DAY14_HPP

@@ -51,7 +51,7 @@ std::vector<d14::reaction> day14::GetReactions(const std::vector<std::string>& l
     return reactions;
 }
 
-d14::reaction& day14::findReactionByOutput(std::vector<d14::reaction> reactions, std::string outName)
+d14::reaction day14::findReactionByOutput(std::vector<d14::reaction> reactions, std::string outName)
 {
     auto rr = std::find_if(reactions.begin(), reactions.end(),
                            [outName](d14::reaction& r) -> bool { return r.output.name == outName; });
@@ -67,5 +67,7 @@ void day14::run_sim(int half)
     for (auto& r : reactions)
         std::cout << r << std::endl;
 
-    d14::reaction &fuel = findReactionByOutput(reactions, "FUEL");
+    d14::reaction fuel = findReactionByOutput(reactions, "FUEL");
+
+    std::cout << "Fuel: " << fuel << std::endl;
 }
