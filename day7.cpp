@@ -4,7 +4,7 @@
 
 #include "day7.hpp"
 #include <sstream>
-#include <boost/tokenizer.hpp>
+#include <algorithm>
 
 bool day7::runProgram(std::vector<long>& pg, int phase, int inputValue, int& output, bool returnOnOutput, int& sp)
 {

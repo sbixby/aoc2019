@@ -9,6 +9,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <boost/tokenizer.hpp>
+#include <boost/token_functions.hpp>
 
 class day_base
 {
