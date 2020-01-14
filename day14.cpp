@@ -26,9 +26,8 @@ std::ostream& operator<<(std::ostream& os, const reaction& o)
 }
 }    // namespace d14
 
-std::vector<d14::reaction> day14::GetReactions(const std::vector<std::string>& lines)
+void day14::GetReactions(const std::vector<std::string>& lines)
 {
-    std::vector<d14::reaction> reactions;
     for (auto& line : lines)
     {
         auto                   sep = boost::char_separator<char>(",=>");
@@ -46,28 +45,28 @@ std::vector<d14::reaction> day14::GetReactions(const std::vector<std::string>& l
         d14::reaction r;
         r.inputs = {pairs.begin(), pairs.end() - 1};
         r.output = pairs.back();
+        finder[r.output.name] = &r;
         reactions.push_back(r);
     }
-    return reactions;
 }
 
-d14::reaction day14::findReactionByOutput(std::vector<d14::reaction> reactions, std::string outName)
-{
-    auto rr = std::find_if(reactions.begin(), reactions.end(),
-                           [outName](d14::reaction& r) -> bool { return r.output.name == outName; });
-    if (rr != reactions.end())
-        return *rr;
-    else throw std::runtime_error("Reaction name not found!");
+void day14::WalkTree(d14::reaction r) {
+
 }
 
 void day14::run_sim(int half)
 {
-    auto reactions = GetReactions(load_data("../data/day14_a.txt"));
+    GetReactions(load_data("../data/day14_a.txt"));
 
     for (auto& r : reactions)
         std::cout << r << std::endl;
 
-    d14::reaction fuel = findReactionByOutput(reactions, "FUEL");
 
-    std::cout << "Fuel: " << fuel << std::endl;
+    d14::reaction* fuel = finder.find("FUEL")->second;
+
+
+
+//    auto x = fuel->output.name;
+//
+//    std::cout << "Fuel: " << x << std::endl;
 }
