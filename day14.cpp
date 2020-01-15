@@ -30,28 +30,42 @@ void day14::GetReactions(const std::vector<std::string>& lines)
 {
     for (auto& line : lines)
     {
-        auto                   sep = boost::char_separator<char>(",=>");
-        auto                   tok = boost::tokenizer<boost::char_separator<char>>(line, sep);
+        auto sep = boost::char_separator<char>(",=>");
+        auto tok = boost::tokenizer<boost::char_separator<char>>(line, sep);
+
         std::vector<d14::pair> pairs;
         for (auto& itr : tok)
         {
-            auto      subTok = std::regex_replace(itr, std::regex("^ +| +$|( ) +"), "$1");
-            int       sp     = subTok.find(' ');
-            d14::pair p;
-            p.qty  = std::stoi(subTok.substr(0, sp));
-            p.name = subTok.substr(sp + 1);
+            auto        subTok = std::regex_replace(itr, std::regex("^ +| +$|( ) +"), "$1");
+            int         sp     = subTok.find(' ');
+            d14::pair   p;
+            std::string st1 = subTok.substr(0, sp);
+            std::string st2 = subTok.substr(sp + 1);
+            p.qty           = std::stoi(st1);
+            p.name          = st2;
             pairs.push_back(p);
         }
         d14::reaction r;
-        r.inputs = {pairs.begin(), pairs.end() - 1};
-        r.output = pairs.back();
+        r.inputs              = {pairs.begin(), pairs.end() - 1};
+        r.output              = pairs.back();
         finder[r.output.name] = &r;
         reactions.push_back(r);
     }
 }
 
-void day14::WalkTree(d14::reaction r) {
+d14::reaction& day14::FindReaction(std::string name)
+{
+    for (auto& r : reactions)
+    {
+        if (r.output.name == name)
+        {
+            return r;
+        }
+    }
+}
 
+void day14::WalkTree(d14::reaction r)
+{
 }
 
 void day14::run_sim(int half)
@@ -61,12 +75,10 @@ void day14::run_sim(int half)
     for (auto& r : reactions)
         std::cout << r << std::endl;
 
+    auto& fuel = finder["FUEL"];
+    //    d14::reaction& fuel = FindReaction("FUEL");
 
-    d14::reaction* fuel = finder.find("FUEL")->second;
-
-
-
-//    auto x = fuel->output.name;
-//
-//    std::cout << "Fuel: " << x << std::endl;
+    auto x = fuel->output.name;
+    std::cout << "found: " << x << std::endl;
+    std::cout << "fuel.output.qty:" << fuel->output.qty << std::endl;
 }

@@ -29,13 +29,14 @@ struct reaction
 class day14 : day_base
 {
    public:
-    void                 run_sim(int half) override;
-    void                 GetReactions(const std::vector<std::string>& lines);
+    void run_sim(int half) override;
+    void GetReactions(const std::vector<std::string>& lines);
 
    private:
     std::vector<d14::reaction>            reactions;
     std::map<std::string, d14::reaction*> finder;
     void                                  WalkTree(d14::reaction r);
+    d14::reaction&                        FindReaction(std::string name);
 };
 
 #endif    // AOC2019_DAY14_HPP
