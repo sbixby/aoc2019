@@ -36,31 +36,12 @@ void day14::GetReactions(const std::vector<std::string>& lines)
         std::vector<d14::pair> pairs;
         for (auto& itr : tok)
         {
-            auto        subTok = std::regex_replace(itr, std::regex("^ +| +$|( ) +"), "$1");
-            int         sp     = subTok.find(' ');
-            d14::pair   p;
-            std::string st1 = subTok.substr(0, sp);
-            std::string st2 = subTok.substr(sp + 1);
-            p.qty           = std::stoi(st1);
-            p.name          = st2;
-            pairs.push_back(p);
+            auto subTok = std::regex_replace(itr, std::regex("^ +| +$|( ) +"), "$1");
+            int  sp     = subTok.find(' ');
+            pairs.emplace_back(std::stoi(subTok.substr(0, sp)), subTok.substr(sp + 1));
         }
-        d14::reaction r;
-        r.inputs              = {pairs.begin(), pairs.end() - 1};
-        r.output              = pairs.back();
-        finder[r.output.name] = &r;
-        reactions.push_back(r);
-    }
-}
-
-d14::reaction& day14::FindReaction(std::string name)
-{
-    for (auto& r : reactions)
-    {
-        if (r.output.name == name)
-        {
-            return r;
-        }
+        d14::reaction r{pairs};
+        reactions.insert(std::pair<std::string, d14::reaction>(r.output.name, r));
     }
 }
 
@@ -72,13 +53,25 @@ void day14::run_sim(int half)
 {
     GetReactions(load_data("../data/day14_a.txt"));
 
-    for (auto& r : reactions)
-        std::cout << r << std::endl;
+    //    for (auto& r : reactions)
+    //        std::cout << r << std::endl;
 
-    auto& fuel = finder["FUEL"];
-    //    d14::reaction& fuel = FindReaction("FUEL");
+    for (auto& p : reactions)
+    {
+        std::cout << p.second << std::endl;
+    }
 
-    auto x = fuel->output.name;
-    std::cout << "found: " << x << std::endl;
-    std::cout << "fuel.output.qty:" << fuel->output.qty << std::endl;
+    //    d14::reaction& x = FindReaction("FUEL");
+    auto x = reactions.find("FUEL")->second;
+    std::cout << "x.output.name:" << x.output.name << std::endl;
+    std::cout << "x.output.qty:" << x.output.qty << std::endl;
+
+    x = reactions.find("A")->second;
+    std::cout << "x.output.name:" << x.output.name << std::endl;
+    std::cout << "x.output.qty:" << x.output.qty << std::endl;
+
+    x = reactions.find("B")->second;
+    std::cout << "x.output.name:" << x.output.name << std::endl;
+    std::cout << "x.output.qty:" << x.output.qty << std::endl;
+
 }

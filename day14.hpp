@@ -7,20 +7,32 @@
 
 #include "day_base.hpp"
 #include <map>
+#include <utility>
 
 namespace d14
 {
 struct pair
 {
-    int                  qty;
-    std::string          name;
+    int         qty;
+    std::string name;
+    pair(int qty, std::string name)
+        : qty(qty)
+        , name(std::move(name))
+    {
+    }
+
     friend std::ostream& operator<<(std::ostream& os, const pair& o);
 };
 
 struct reaction
 {
-    std::vector<pair>    inputs;
-    pair                 output;
+    std::vector<pair> inputs;
+    pair              output;
+    explicit reaction(std::vector<pair> inputs)
+        : inputs({inputs.begin(), inputs.end() - 1})
+        , output(inputs.back())
+    {
+    }
     friend std::ostream& operator<<(std::ostream& os, const reaction& o);
 };
 
@@ -33,10 +45,9 @@ class day14 : day_base
     void GetReactions(const std::vector<std::string>& lines);
 
    private:
-    std::vector<d14::reaction>            reactions;
-    std::map<std::string, d14::reaction*> finder;
-    void                                  WalkTree(d14::reaction r);
-    d14::reaction&                        FindReaction(std::string name);
+    std::map<std::string, d14::reaction> reactions;
+
+    void WalkTree(d14::reaction r);
 };
 
 #endif    // AOC2019_DAY14_HPP
