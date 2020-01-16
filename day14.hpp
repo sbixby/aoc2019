@@ -13,8 +13,9 @@ namespace d14
 {
 struct pair
 {
-    int         qty;
+    int         qty = 0;
     std::string name;
+    pair() = default;
     pair(int qty, std::string name)
         : qty(qty)
         , name(std::move(name))
@@ -28,6 +29,7 @@ struct reaction
 {
     std::vector<pair> inputs;
     pair              output;
+    reaction() = default;
     explicit reaction(std::vector<pair> inputs)
         : inputs({inputs.begin(), inputs.end() - 1})
         , output(inputs.back())
@@ -46,9 +48,10 @@ class day14 : day_base
 
    private:
     std::map<std::string, d14::reaction> reactions;
-    std::map<std::string, int> counts;
+    std::map<std::string, int>           counts;
+    int                                  oreConsumed = 0;
 
-    void WalkTree(const d14::reaction& r, int need);
+    void WalkTree(std::string& name, int need);
 };
 
 #endif    // AOC2019_DAY14_HPP
