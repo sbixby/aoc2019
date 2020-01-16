@@ -45,8 +45,14 @@ void day14::GetReactions(const std::vector<std::string>& lines)
     }
 }
 
-void day14::WalkTree(d14::reaction r)
+void day14::WalkTree(const d14::reaction& r, int need)
 {
+    for(auto &p:r.inputs) {
+        if (p.name=="ORE") {
+            if ()
+        }
+        WalkTree(reactions[p.name], need*p.qty);
+    }
 }
 
 void day14::run_sim(int half)
@@ -61,17 +67,8 @@ void day14::run_sim(int half)
         std::cout << p.second << std::endl;
     }
 
-    //    d14::reaction& x = FindReaction("FUEL");
-    auto x = reactions.find("FUEL")->second;
-    std::cout << "x.output.name:" << x.output.name << std::endl;
-    std::cout << "x.output.qty:" << x.output.qty << std::endl;
+    auto &r = reactions["FUEL"];
 
-    x = reactions.find("A")->second;
-    std::cout << "x.output.name:" << x.output.name << std::endl;
-    std::cout << "x.output.qty:" << x.output.qty << std::endl;
-
-    x = reactions.find("B")->second;
-    std::cout << "x.output.name:" << x.output.name << std::endl;
-    std::cout << "x.output.qty:" << x.output.qty << std::endl;
+    WalkTree(r, r.output.qty);
 
 }

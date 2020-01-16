@@ -46,8 +46,9 @@ class day14 : day_base
 
    private:
     std::map<std::string, d14::reaction> reactions;
+    std::map<std::string, int> counts;
 
-    void WalkTree(d14::reaction r);
+    void WalkTree(const d14::reaction& r, int need);
 };
 
 #endif    // AOC2019_DAY14_HPP
