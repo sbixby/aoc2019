@@ -62,45 +62,57 @@ void day14::WalkTree(std::string& name, int need)
     if (counts[name] >= need)
     {
         counts[name] -= need;
-        std::cout << "Satisfied need of " << need << " " << name << std::endl;
+//        std::cout << "Satisfied need of " << need << " " << name << std::endl;
         return;
     }
 
     // Not enough.  Go through the inputs and
     // walk down the tree to get more of the input.
-    std::cout << r.output.name << ", " << r.output.qty << std::endl;
+//    std::cout << r.output.name << ", " << r.output.qty << std::endl;
     for (auto &inp:r.inputs) {
-        WalkTree(inp.name, inp.qty*need);
+        int depNeed=0,thisNeed=0;
+        while(thisNeed < need) {
+            depNeed+=inp.qty;
+            thisNeed+=r.output.qty;
+        }
+        WalkTree(inp.name, depNeed);
     }
 
-    // Now consume each of the inputs and move back up the stack.
+    // Now consume each of the inputs
     for (auto& inp : r.inputs)
     {
         counts[inp.name] -= inp.qty;
     }
+    // And make the output
+    counts[r.output.name]+=r.output.qty;
+    // Consume the need
+    counts[r.output.name]-=need;
+
 }
 
 void day14::run_sim(int half)
 {
-    //    GetReactions(load_data("../data/day14_a.txt"));
-    GetReactions({"7 A, 2 B => 1 FUEL", "10 ORE => 10 A", "5 ORE => 1 B"});
+        GetReactions(load_data("../data/day14_b.txt"));
+//    GetReactions({"7 A, 2 B => 1 FUEL", "10 ORE => 10 A", "5 ORE => 1 B"});
 //    GetReactions({"10 ORE => 1 FUEL"});
 
     //    for (auto& r : reactions)
     //        std::cout << r << std::endl;
 
-    for (auto& p : reactions)
-    {
-        std::cout << "Reaction: " << p.second << std::endl;
-    }
-    for (auto& p : counts)
-    {
-        std::cout << "Counts for " << p.first << ":" << p.second << std::endl;
-    }
-    std::cout << std::endl;
+//    for (auto& p : reactions)
+//    {
+//        std::cout << "Reaction: " << p.second << std::endl;
+//    }
+//    for (auto& p : counts)
+//    {
+//        std::cout << "Counts for " << p.first << ":" << p.second << std::endl;
+//    }
+//    std::cout << std::endl;
 
     std::string root{"FUEL"};
     WalkTree(root, 1);
 
     std::cout << "oreConsumed:" << oreConsumed << std::endl;
+
+
 }
