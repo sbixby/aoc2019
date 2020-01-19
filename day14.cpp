@@ -81,7 +81,7 @@ void day14::WalkTree(std::string& name, int need)
     // Now consume each of the inputs
     for (auto& inp : r.inputs)
     {
-        counts[inp.name] -= inp.qty;
+        counts[inp.name] -= inp.qty * need / r.output.qty;
     }
     // And make the output
     counts[r.output.name]+=r.output.qty;
