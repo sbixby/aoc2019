@@ -51,7 +51,7 @@ class day14 : day_base
     std::map<std::string, int>           counts;
     int                                  oreConsumed = 0;
 
-    void WalkTree(std::string& name, int need);
+    void WalkTree(d14::reaction& r);
 };
 
 #endif    // AOC2019_DAY14_HPP
