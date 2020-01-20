@@ -48,7 +48,7 @@ void day14::GetReactions(const std::vector<std::string>& lines)
     counts["ORE"] = 0;
 }
 
-void day14::WalkTree(d14::reaction& r)
+void day14::WalkTree(d14::reaction& r, long mult)
 {
     // Assumes ORE is only child of a reaction
     if (r.inputs[0].name == "ORE")
@@ -69,23 +69,46 @@ void day14::WalkTree(d14::reaction& r)
         // Iterate to get enough
         while (counts[inp.name] < inp.qty)
         {
-            WalkTree(reactions[inp.name]);
+            WalkTree(reactions[inp.name],1);
         }
         // Consume what we need
-        counts[inp.name]-=inp.qty;
+        counts[inp.name] -= inp.qty;
     }
     counts[r.output.name] += r.output.qty;
 }
 
 void day14::run_sim(int half)
 {
-    GetReactions(load_data("../data/day14.txt"));
+    GetReactions(load_data("../data/day14_b.txt"));
+    long trillion = 1000000000000;
 
-    if (half==1)
+    WalkTree(reactions["FUEL"],1);
+    long multiplier = trillion/oreConsumed;
+    std::cout << "oreConsumed:" << oreConsumed << std::endl;
+
+//    std::cout << "Remaining counts:" << std::endl;
+//    for(auto &cp:counts) {
+//        std::cout << cp.first << " : " << cp.second << std::endl;
+//    }
+
+    if (half == 2)
     {
-        WalkTree(reactions["FUEL"]);
-        std::cout << "oreConsumed:" << oreConsumed << std::endl;
-    } else {
-        ;
+        std::cout << "Trillion/oreconsumed:" << multiplier << std::endl;
+
+        // Clear the counts
+        oreConsumed = 0;
+        for (auto& p : counts)
+        {
+            p.second = 0;
+        }
+
+        // Multiply the top-level quantity by the starting point
+        auto& r = reactions["FUEL"];
+        for (auto& inp : r.inputs)
+        {
+            inp.qty *= multiplier;
+        }
+        WalkTree(reactions["FUEL"],1);
+        std::cout << "much-fuel, oreConsumed:" << oreConsumed << std::endl;
     }
 }

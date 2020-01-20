@@ -13,10 +13,10 @@ namespace d14
 {
 struct pair
 {
-    int         qty = 0;
+    long         qty = 0;
     std::string name;
     pair() = default;
-    pair(int qty, std::string name)
+    pair(long qty, std::string name)
         : qty(qty)
         , name(std::move(name))
     {
@@ -48,10 +48,10 @@ class day14 : day_base
 
    private:
     std::map<std::string, d14::reaction> reactions;
-    std::map<std::string, int>           counts;
-    int                                  oreConsumed = 0;
+    std::map<std::string, long>           counts;
+    long                                  oreConsumed = 0;
 
-    void WalkTree(d14::reaction& r);
+    void WalkTree(d14::reaction& r, long mult);
 };
 
 #endif    // AOC2019_DAY14_HPP
